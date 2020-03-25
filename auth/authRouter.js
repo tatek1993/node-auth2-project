@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const Users = require('../users/usersModel.js');
 // import secrets
+const {jwtSecret} = require('../config/secrets.js');
 
 router.post('/register', (req, res) => {
     let user = req.body;
@@ -15,7 +16,7 @@ router.post('/register', (req, res) => {
             res.status(201).json(saved);
         })
         .catch(error => {
-            res.status(500).json(error);
+            res.status(500).json(console.log(error));
         });
 });
 
@@ -36,13 +37,22 @@ router.post('/login', (req, res) => {
             }
         })
         .catch(error => {
-            res.status(500).json(error);
+            res.status(500).json(console.log(error));
         });
 });
 
 function makeToken(user) {
     const payload = {
-        
-    }
+        subject: user.id,
+        username: user.username,
+    };
+
+    const options = {
+        expiresIn: '1h',
+    };
+
+    return jwt.sign(payload, jwtSecret, options);
 }
+
+module.exports = router;
 
